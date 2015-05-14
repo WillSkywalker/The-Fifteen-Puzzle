@@ -2,6 +2,7 @@
 Loyd's Fifteen puzzle - solver and visualizer
 Note that solved configuration has the blank (zero) tile in upper left
 Use the arrows key to swap this tile with its neighbors
+Online version: http://www.codeskulptor.org/#user40_z4gNwFVH3S_3.py
 """
 
 import poc_fifteen_gui
@@ -131,23 +132,61 @@ class Puzzle:
         at the given position in the bottom rows of the puzzle (target_row > 1)
         Returns a boolean
         """
-        # replace with your code
-        return False
+        if self._grid[target_row][target_col] != 0:
+            return False
+        for idx, block in enumerate(self._grid[target_row][target_col+1:], start=1):
+            if block != target_row * self._width + target_col + idx:
+                return False
+        for r_idx, row in enumerate(self._grid[target_row+1:], start=target_row+1):
+            for c_idx, block in enumerate(row):
+                if block != r_idx * self._width + c_idx:
+                    return False 
+        return True
 
     def solve_interior_tile(self, target_row, target_col):
         """
         Place correct tile at target position
         Updates puzzle and returns a move string
         """
-        # replace with your code
-        return ""
+        move_string = ''
+        # assert self.lower_row_invariant(target_row, target_col)
+        correct_tile = self.current_position(target_row, target_col)
+        for idx in xrange(target_row-correct_tile[0]):
+            move_string += 'u'
+        if target_col > correct_tile[1]:
+            for idx in xrange(target_col-correct_tile[1]):
+                move_string += 'l'
+            if self.current_position(target_row, target_col)[0] == 0:
+                move_string += 'dru'
+            else:
+                move_string += 'ur'
+        else:
+            for idx in xrange(correct_tile[1]-target_col):
+                move_string += 'r'
+            if self.current_position(target_row, target_col)[0] == 0:
+                move_string += 'dlu'
+            else:
+                move_string += 'ul'
+
+        correct_tile = self.current_position(target_row, target_col)
+        for idx in xrange(target_col-correct_tile[1]-1):
+            move_string += 'rdlur'
+        for idx in xrange(correct_tile[1]-target_col-1):
+            move_string += 'ldrul'
+        for idx in xrange(target_row-correct_tile[0]-1):
+            move_string += 'lddru'
+        move_string += 'ld'
+        self.update_puzzle(move_string)
+        # assert self.lower_row_invariant(target_row, target_col-1)
+        return move_string
 
     def solve_col0_tile(self, target_row):
         """
         Solve tile in column zero on specified row (> 1)
         Updates puzzle and returns a move string
         """
-        # replace with your code
+        # working
+        assert self.lower_row_invariant(target_row, 0)
         return ""
 
     #############################################################
@@ -207,6 +246,7 @@ class Puzzle:
         return ""
 
 # Start interactive simulation
-poc_fifteen_gui.FifteenGUI(Puzzle(4, 4))
+if __name__ == '__main__':
+    poc_fifteen_gui.FifteenGUI(Puzzle(4, 4))
 
 

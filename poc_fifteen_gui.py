@@ -2,7 +2,6 @@
 GUI for the Fifteen puzzle
 """
 
-# import simplegui
 from Tkinter import *
 
 # constants
@@ -35,15 +34,13 @@ class FifteenGUI:
         self._solution = ""
         self._current_moves = ""
 
-        solve_button = Button(self._root, text='Solve', command=self.solve)
+        Button(self._root, text='Solve', command=self.solve).grid(row=1, column=0)
+        Button(self._root, text='Print moves', 
+               command=self.print_moves).grid(row=1, column=3)
+
         self.input_move = Entry(self._root)
         self.input_move.bind("<Return>", self.enter_moves)
-        print_button = Button(self._root, text='Print moves', command=self.print_moves)
-
-        solve_button.grid(row=1, column=0)
         self.input_move.grid(row=1, column=1)
-        print_button.grid(row=1, column=3)
-        self.draw(self._frame)
 
         self._root.bind(sequence='<KeyPress-Up>', func=self.keydown)
         self._root.bind(sequence='<KeyPress-Down>', func=self.keydown)
@@ -51,6 +48,7 @@ class FifteenGUI:
         self._root.bind(sequence='<KeyPress-Right>', func=self.keydown)
         self._root.after(250, self.tick)
 
+        self.draw(self._frame)
         self._root.mainloop()
 
     def tick(self):
@@ -61,7 +59,7 @@ class FifteenGUI:
             self._root.after(250, self.tick)
             return
         direction = self._solution[0]
-        self._solution = self._solution[1:] if len(self._solution) > 1 else ""
+        self._solution = self._solution[1:]
         try:
             self._puzzle.update_puzzle(direction)
         except:
@@ -132,12 +130,11 @@ class FifteenGUI:
                     background = "#8080FF"
                 else:
                     background = "blue"
-                tile = [[col * TILE_SIZE, row * TILE_SIZE],
+                tile = ([col * TILE_SIZE, row * TILE_SIZE],
                         [(col + 1) * TILE_SIZE, row * TILE_SIZE],
                         [(col + 1) * TILE_SIZE, (row + 1) * TILE_SIZE],
-                        [col * TILE_SIZE, (row + 1) * TILE_SIZE]]
-                canvas.create_polygon(tile[0], tile[1], tile[2], tile[3], 
-                                      outline="white", fill=background)
+                        [col * TILE_SIZE, (row + 1) * TILE_SIZE])
+                canvas.create_polygon(*tile, outline="white", fill=background)
                 canvas.create_text((col + .2) * TILE_SIZE,
                                 (row + 0.8) * TILE_SIZE,
                                 text=str(tile_num), fill="white")
