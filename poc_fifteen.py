@@ -2,7 +2,7 @@
 Loyd's Fifteen puzzle - solver and visualizer
 Note that solved configuration has the blank (zero) tile in upper left
 Use the arrows key to swap this tile with its neighbors
-Online version: http://www.codeskulptor.org/#user40_z4gNwFVH3S_3.py
+Online version: http://www.codeskulptor.org/#user40_z4gNwFVH3S_18.py
 """
 
 import poc_fifteen_gui
@@ -148,46 +148,80 @@ class Puzzle:
         Place correct tile at target position
         Updates puzzle and returns a move string
         """
-        move_string = ''
+        approach_string = ''
         # assert self.lower_row_invariant(target_row, target_col)
         correct_tile = self.current_position(target_row, target_col)
         for idx in xrange(target_row-correct_tile[0]):
-            move_string += 'u'
+            approach_string += 'u'
         if target_col > correct_tile[1]:
             for idx in xrange(target_col-correct_tile[1]):
-                move_string += 'l'
+                approach_string += 'l'
             if self.current_position(target_row, target_col)[0] == 0:
-                move_string += 'dru'
+                approach_string += 'dru'
             else:
-                move_string += 'ur'
+                approach_string += 'ur'
         else:
             for idx in xrange(correct_tile[1]-target_col):
-                move_string += 'r'
+                approach_string += 'r'
             if self.current_position(target_row, target_col)[0] == 0:
-                move_string += 'dlu'
+                approach_string += 'dlu'
             else:
-                move_string += 'ul'
-
+                approach_string += 'ul'
+        self.update_puzzle(approach_string)
         correct_tile = self.current_position(target_row, target_col)
-        for idx in xrange(target_col-correct_tile[1]-1):
-            move_string += 'rdlur'
-        for idx in xrange(correct_tile[1]-target_col-1):
-            move_string += 'ldrul'
-        for idx in xrange(target_row-correct_tile[0]-1):
-            move_string += 'lddru'
-        move_string += 'ld'
-        self.update_puzzle(move_string)
+        return_string = ''
+        for idx in xrange(target_col-correct_tile[1]):
+            return_string += 'rdlur'
+        for idx in xrange(correct_tile[1]-target_col):
+            return_string += 'ldrul'
+        for idx in xrange(target_row-correct_tile[0]):
+            return_string += 'lddru'
+        return_string += 'ld'
+        self.update_puzzle(return_string)
         # assert self.lower_row_invariant(target_row, target_col-1)
-        return move_string
+        return approach_string + return_string
 
     def solve_col0_tile(self, target_row):
         """
         Solve tile in column zero on specified row (> 1)
         Updates puzzle and returns a move string
         """
-        # working
-        assert self.lower_row_invariant(target_row, 0)
-        return ""
+        # assert self.lower_row_invariant(target_row, 0)
+
+        approach_string = ''
+        self.update_puzzle('ur')
+        if self._grid[target_row][0] == target_row * self._width:
+            approach_string += 'u' + 'r' * (self._width - 1)
+            self.update_puzzle( 'r' * (self._width - 2))
+            return approach_string
+        self.update_puzzle('ld')
+        correct_tile = self.current_position(target_row, 0)
+        for idx in xrange(target_row-correct_tile[0]):
+            approach_string += 'u'
+        for idx in xrange(correct_tile[1]):
+            approach_string += 'r'
+        if self.current_position(target_row, 0)[0] == 0:
+            approach_string += 'dlu'
+        else:
+            approach_string += 'ul'
+        self.update_puzzle(approach_string)
+
+        return_string = ''
+        correct_tile = self.current_position(target_row, 0)
+        for idx in xrange(1-correct_tile[1]):
+            return_string += 'rdlur'
+        for idx in xrange(correct_tile[1]-1):
+            return_string += 'ldrul'
+        for idx in xrange(target_row-correct_tile[0]-1):
+            return_string += 'lddru'
+        return_string += 'ld'
+        self.update_puzzle(return_string)
+
+        magic_solve_string = 'ruldrdlurdluurddlu' + 'r' * (self._width-1)
+        self.update_puzzle(magic_solve_string)
+
+        # assert self.lower_row_invariant(target_row-1, self._width-1)
+        return approach_string + return_string + magic_solve_string
 
     #############################################################
     # Phase two methods
@@ -198,8 +232,19 @@ class Puzzle:
         at the given column (col > 1)
         Returns a boolean
         """
-        # replace with your code
-        return False
+        if self._grid[0][target_col] != 0:
+            return False
+        for idx, block in enumerate(self._grid[0][target_col+1:], start=1):
+            if block != target_col + idx:
+                return False
+        for idx, block in enumerate(self._grid[1][target_col:]):
+            if block != self._width + target_col + idx:
+                return False
+        for r_idx, row in enumerate(self._grid[2:], start=2):
+            for c_idx, block in enumerate(row):
+                if block != r_idx * self._width + c_idx:
+                    return False 
+        return True
 
     def row1_invariant(self, target_col):
         """
@@ -207,8 +252,16 @@ class Puzzle:
         at the given column (col > 1)
         Returns a boolean
         """
-        # replace with your code
-        return False
+        if self._grid[1][target_col] != 0:
+            return False
+        for idx, block in enumerate(self._grid[1][target_col+1:], start=1):
+            if block != self._width + target_col + idx:
+                return False
+        for r_idx, row in enumerate(self._grid[2:], start=2):
+            for c_idx, block in enumerate(row):
+                if block != r_idx * self._width + c_idx:
+                    return False 
+        return True
 
     def solve_row0_tile(self, target_col):
         """
