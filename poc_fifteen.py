@@ -2,7 +2,7 @@
 Loyd's Fifteen puzzle - solver and visualizer
 Note that solved configuration has the blank (zero) tile in upper left
 Use the arrows key to swap this tile with its neighbors
-Online version: http://www.codeskulptor.org/#user40_z4gNwFVH3S_18.py
+Online version: http://www.codeskulptor.org/#user40_z4gNwFVH3S_20.py
 """
 
 import poc_fifteen_gui
@@ -243,7 +243,7 @@ class Puzzle:
         for r_idx, row in enumerate(self._grid[2:], start=2):
             for c_idx, block in enumerate(row):
                 if block != r_idx * self._width + c_idx:
-                    return False 
+                    return False
         return True
 
     def row1_invariant(self, target_col):
@@ -276,8 +276,17 @@ class Puzzle:
         Solve the tile in row one at the specified column
         Updates puzzle and returns a move string
         """
-        # replace with your code
-        return ""
+        # working
+        # assert self.row1_invariant(target_col)
+        if self._grid[0][target_col] == self._width + target_col:
+            self.update_puzzle('u')
+            # assert self.row0_invariant(target_col)
+            return 'u'
+
+        move_string = self.solve_interior_tile(1, target_col)
+        self.update_puzzle('ur')
+        # assert self.row0_invariant(target_col)
+        return move_string + 'ur'
 
     ###########################################################
     # Phase 3 methods
