@@ -262,7 +262,6 @@ class Puzzle:
         Solve the tile in row zero at the specified column
         Updates puzzle and returns a move string
         """
-        # working
         assert self.row0_invariant(target_col), 'Input not correct'
         self.update_puzzle('ld')
         if self._grid[0][target_col] == target_col:
