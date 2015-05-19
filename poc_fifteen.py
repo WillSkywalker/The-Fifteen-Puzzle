@@ -2,7 +2,7 @@
 Loyd's Fifteen puzzle - solver and visualizer
 Note that solved configuration has the blank (zero) tile in upper left
 Use the arrows key to swap this tile with its neighbors
-Online version: http://www.codeskulptor.org/#user40_z4gNwFVH3S_26.py
+Online version: http://www.codeskulptor.org/#user40_z4gNwFVH3S_27.py
 """
 
 import poc_fifteen_gui
