@@ -82,10 +82,11 @@ def test_one():
 
 
 def test_two():
-    t1 = poc_fifteen.Puzzle(3, 3, T_FOUR)
-    print t1.row1_invariant(1)
-    
+    puz = poc_fifteen.Puzzle(4, 4, [[15, 11, 8, 12], [14, 10, 9, 13], [2, 6, 1, 4], [3, 7, 5, 0]])
+    sol = puz.solve_puzzle()
+    print sol
+    print len(sol)    
 
 if __name__ == '__main__':
-    test_one()
+    test_two()
     # poc_fifteen_gui.FifteenGUI(poc_fifteen.Puzzle(2, 3, T_T))
