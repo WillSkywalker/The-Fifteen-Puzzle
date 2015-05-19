@@ -46,7 +46,7 @@ class FifteenGUI:
         self._root.bind(sequence='<KeyPress-Down>', func=self.keydown)
         self._root.bind(sequence='<KeyPress-Left>', func=self.keydown)
         self._root.bind(sequence='<KeyPress-Right>', func=self.keydown)
-        self._root.after(250, self.tick)
+        self._root.after(300, self.tick)
 
         self.draw(self._frame)
         self._root.mainloop()
@@ -56,7 +56,7 @@ class FifteenGUI:
         Timer for incrementally displaying computed solution
         """
         if self._solution == "":
-            self._root.after(250, self.tick)
+            self._root.after(300, self.tick)
             return
         direction = self._solution[0]
         self._solution = self._solution[1:]
@@ -65,7 +65,7 @@ class FifteenGUI:
         except:
             print "invalid move:", direction
         self.draw(self._frame)
-        self._root.after(250, self.tick)
+        self._root.after(300, self.tick)
 
     def solve(self):
         """
@@ -73,7 +73,6 @@ class FifteenGUI:
         """
         new_puzzle = self._puzzle.clone()
         self._solution = new_puzzle.solve_puzzle()
-        self.draw(self._frame)
 
     def print_moves(self):
         """
@@ -123,8 +122,8 @@ class FifteenGUI:
         Draw the puzzle
         """
         canvas.delete()
-        for row in range(self._puzzle_height):
-            for col in range(self._puzzle_width):
+        for row in xrange(self._puzzle_height):
+            for col in xrange(self._puzzle_width):
                 tile_num = self._puzzle.get_number(row, col)
                 if tile_num == 0:
                     background = "#8080FF"

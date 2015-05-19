@@ -13,8 +13,8 @@ T_TWO = [[8, 4, 5, 3, 7],
          [15, 16, 17, 18, 19],
          [20, 21, 22, 23, 24]]
 
-T_THREE = [[7, 4, 5, 10, 8],
-         [1, 2, 9, 6, 3],
+T_THREE = [[7, 4, 6, 10, 8],
+         [1, 2, 9, 5, 3],
          [0, 11, 12, 13, 14],
          [15, 16, 17, 18, 19],
          [20, 21, 22, 23, 24]]
@@ -28,22 +28,24 @@ T_FIVE = [[7, 6, 5, 0, 4],
           [10, 11, 12, 13, 14], 
           [15, 16, 17, 18, 19]]
 
-T_T = [[4, 1, 0], 
-       [2, 3, 5], 
-       [6, 7, 8]]
+T_T = [[5, 1, 3, 8, 4],
+       [6, 16, 9, 13, 7],
+       [10, 21, 2, 12, 18],
+       [15, 22, 23, 19, 14],
+       [20, 17, 11, 24, 0]]
 
 def test_one():
-    t1 = poc_fifteen.Puzzle(3, 3, T_T)
+    t1 = poc_fifteen.Puzzle(4, 4, T_ONE)
     # print t1.lower_row_invariant(2,2) # true
     t2 = poc_fifteen.Puzzle(5, 5, T_TWO)
     t3 = poc_fifteen.Puzzle(5, 5, T_THREE)
-    t4 = poc_fifteen.Puzzle(4, 5, T_FIVE)
+    t4 = poc_fifteen.Puzzle(5, 5, T_T)
     print t1
-    print t1.solve_row0_tile(2)
+    print t1.solve_row1_tile(3)
     print t1
     # print t1.solve_row1_tile(2)
     # print t1
-    print '==================='
+    print 'ONE==================='
     print t2
     print t2.solve_row1_tile(4)
     print t2
@@ -51,15 +53,28 @@ def test_one():
     # print t2
     # print t2.solve_row1_tile(2)
     # print t2
-    print '==================='
+    print 'TWO==================='
     print t3
     print t3.solve_col0_tile(2)
     print t3
+    t3.solve_row1_tile(4)
+    t3.solve_row0_tile(4)
+    t3.solve_row1_tile(3)
+    t3.solve_row0_tile(3)
+    t3.solve_row1_tile(2)
+    t3.solve_row0_tile(2)
+    # t3.solve_row1_tile(1)
+    # t3.solve_row0_tile(1)
+    print t3
+    print t3.solve_2x2()
+    print t3
+
+
     # print t3.solve_row1_tile(3)
     # print t3
-    print '==================='
+    print 'TRE==================='
     print t4
-    print t4.solve_row0_tile(3)
+    print t4.solve_puzzle()
     print t4
     # print t2.lower_row_invariant(1,2) # false
     # print t2.lower_row_invariant(2,1) # true

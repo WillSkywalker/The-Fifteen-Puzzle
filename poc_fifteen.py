@@ -20,12 +20,12 @@ class Puzzle:
         self._height = puzzle_height
         self._width = puzzle_width
         self._grid = [[col + puzzle_width * row
-                       for col in range(self._width)]
-                      for row in range(self._height)]
+                       for col in xrange(self._width)]
+                      for row in xrange(self._height)]
 
         if initial_grid != None:
-            for row in range(puzzle_height):
-                for col in range(puzzle_width):
+            for row in xrange(puzzle_height):
+                for col in xrange(puzzle_width):
                     self._grid[row][col] = initial_grid[row][col]
 
     def __str__(self):
@@ -34,13 +34,11 @@ class Puzzle:
         Returns a string
         """
         ans = ""
-        for row in range(self._height):
+        for row in xrange(self._height):
             ans += str(self._grid[row])
             ans += "\n"
         return ans
 
-    #####################################
-    # GUI methods
 
     def get_height(self):
         """
@@ -77,8 +75,6 @@ class Puzzle:
         new_puzzle = Puzzle(self._height, self._width, self._grid)
         return new_puzzle
 
-    ########################################################
-    # Core puzzle methods
 
     def current_position(self, solved_row, solved_col):
         """
@@ -88,8 +84,8 @@ class Puzzle:
         """
         solved_value = (solved_col + self._width * solved_row)
 
-        for row in range(self._height):
-            for col in range(self._width):
+        for row in xrange(self._height):
+            for col in xrange(self._width):
                 if self._grid[row][col] == solved_value:
                     return (row, col)
         assert False, "Value " + str(solved_value) + " not found"
@@ -141,7 +137,7 @@ class Puzzle:
             else:
                 approach_string += 'ur'
             from_col += 1
-        else:
+        elif to_col < from_col:
             for idx in xrange(from_col-to_col):
                 approach_string += 'r'
             if from_row == 0:
@@ -150,6 +146,8 @@ class Puzzle:
             else:
                 approach_string += 'ul'
             from_col -= 1
+        else:
+            from_row += 1
         self.update_puzzle(approach_string)
 
         return_string = ''
@@ -163,9 +161,6 @@ class Puzzle:
         self.update_puzzle(return_string)
         return approach_string + return_string
 
-
-    ##################################################################
-    # Phase one methods
 
     def lower_row_invariant(self, target_row, target_col):
         """
@@ -189,10 +184,10 @@ class Puzzle:
         Place correct tile at target position
         Updates puzzle and returns a move string
         """
-        # assert self.lower_row_invariant(target_row, target_col), 'Input not correct'
+        assert self.lower_row_invariant(target_row, target_col), 'Input not correct'
         correct_tile = self.current_position(target_row, target_col)
         move_string = self.basic_move_tile(correct_tile[0], correct_tile[1], target_row, target_col)
-        # assert self.lower_row_invariant(target_row, target_col-1), 'Return wrong string '+move_string
+        assert self.lower_row_invariant(target_row, target_col-1), 'Return wrong string '+move_string
         return move_string
 
     def solve_col0_tile(self, target_row):
@@ -200,7 +195,7 @@ class Puzzle:
         Solve tile in column zero on specified row (> 1)
         Updates puzzle and returns a move string
         """
-        # assert self.lower_row_invariant(target_row, 0), 'Input not correct'
+        assert self.lower_row_invariant(target_row, 0), 'Input not correct'
 
         self.update_puzzle('ur')
         if self._grid[target_row][0] == target_row * self._width:
@@ -214,11 +209,9 @@ class Puzzle:
         magic_solve_string = 'ruldrdlurdluurddlu' + 'r' * (self._width-1)
         self.update_puzzle(magic_solve_string)
 
-        # assert self.lower_row_invariant(target_row-1, self._width-1), 'Return wrong string'
+        assert self.lower_row_invariant(target_row-1, self._width-1), 'Return wrong string'
         return 'ur' + move_string + magic_solve_string
 
-    #############################################################
-    # Phase two methods
 
     def row0_invariant(self, target_col):
         """
@@ -262,7 +255,7 @@ class Puzzle:
         Solve the tile in row zero at the specified column
         Updates puzzle and returns a move string
         """
-        assert self.row0_invariant(target_col), 'Input not correct'
+        assert self.row0_invariant(target_col), 'Input not correct: ' + str(target_col) +'\n' + str(self)
         self.update_puzzle('ld')
         if self._grid[0][target_col] == target_col:
             assert self.row1_invariant(target_col-1)
@@ -272,7 +265,10 @@ class Puzzle:
         for idx in xrange(target_col-correct_tile[1]-1):
             move_string += 'l'
         if correct_tile[0] == 0:
-            move_string += 'uld'
+            if move_string:
+                move_string += 'urdl'
+            else:
+                move_string += 'uld'
         for idx in xrange(target_col-correct_tile[1]-2):
             move_string += 'urrdl'
         self.update_puzzle(move_string)
@@ -286,7 +282,7 @@ class Puzzle:
         Solve the tile in row one at the specified column
         Updates puzzle and returns a move string
         """
-        # assert self.row1_invariant(target_col), 'Input not correct'
+        assert self.row1_invariant(target_col), 'Input not correct'
         if self._grid[0][target_col] == self._width + target_col:
             self.update_puzzle('u')
             assert self.row0_invariant(target_col)
@@ -294,30 +290,49 @@ class Puzzle:
         correct_tile = self.current_position(1, target_col)
         move_string = self.basic_move_tile(correct_tile[0], correct_tile[1], 1, target_col)
         self.update_puzzle('ur')
-        # assert self.row0_invariant(target_col), 'Return wrong string'
+        assert self.row0_invariant(target_col), 'Return wrong string'
         return move_string + 'ur'
 
-    ###########################################################
-    # Phase 3 methods
 
     def solve_2x2(self):
         """
         Solve the upper left 2x2 part of the puzzle
         Updates the puzzle and returns a move string
         """
-        # replace with your code
-        return ""
+        move_string = 'ul'
+        self.update_puzzle('ul')
+        for idx in xrange(self._grid[0][1]-self._width+1):
+            self.update_puzzle('rdlu')
+            move_string += 'rdlu'
+        return move_string
 
     def solve_puzzle(self):
         """
         Generate a solution string for a puzzle
         Updates the puzzle and returns a move string
         """
-        # replace with your code
-        return ""
+        initial_string = ''
+        for row in xrange(self._height):
+            for col in xrange(self._width):
+                if self._grid[row][col] == 0:
+                    zero_row, zero_col = row, col
+        initial_string += 'd' * (self._height - zero_row - 1) + 'r' * (self._width - zero_col - 1)
+        self.update_puzzle(initial_string)
 
-# Start interactive simulation
+        solve_string = ''
+        for row in xrange(self._height-1, 1, -1):
+            for col in xrange(self._width-1, 0, -1):
+                solve_string += self.solve_interior_tile(row, col)
+            solve_string += self.solve_col0_tile(row)
+
+        for col in xrange(self._width-1, 1, -1):
+            solve_string += self.solve_row1_tile(col)
+            solve_string += self.solve_row0_tile(col)
+        solve_string += self.solve_2x2()             
+
+
+        return initial_string + solve_string
+
 if __name__ == '__main__':
     poc_fifteen_gui.FifteenGUI(Puzzle(5, 5))
-
 
