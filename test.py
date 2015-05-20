@@ -58,46 +58,6 @@ def test_one():
     print t_stop
     print t_stop.solve_interior_tile(4, 4)
     print t_stop
-    print t_stop.solve_interior_tile(4, 3)
-    print t_stop
-    print t_stop.solve_interior_tile(4, 2)
-    print t_stop
-    print t_stop.solve_interior_tile(4, 1)
-    print t_stop
-    print t_stop.solve_col0_tile(4)
-    print t_stop
-    print t_stop.solve_interior_tile(3, 4)
-    print t_stop
-    print t_stop.solve_interior_tile(3, 3)
-    print t_stop
-    print t_stop.solve_interior_tile(3, 2)
-    print t_stop
-    print t_stop.solve_interior_tile(3, 1)
-    print t_stop
-    print t_stop.solve_col0_tile(3)
-    print t_stop
-    print t_stop.solve_interior_tile(2, 4)
-    print t_stop
-    print t_stop.solve_interior_tile(2, 3)
-    print t_stop
-    print t_stop.solve_interior_tile(2, 2)
-    print t_stop
-    print t_stop.solve_interior_tile(2, 1)
-    print t_stop
-    print t_stop.solve_col0_tile(2)
-    print t_stop
-    print t_stop.solve_row1_tile(4)
-    print t_stop
-    print t_stop.solve_row0_tile(4)
-    print t_stop
-    print t_stop.solve_row1_tile(3)
-    print t_stop
-    print t_stop.solve_row0_tile(3)
-    print t_stop
-    print t_stop.solve_row1_tile(2)
-    print t_stop
-    print t_stop.solve_row0_tile(2)
-    print t_stop
     # print t2.solve_row1_tile(3)
     # print t2
     # print t2.solve_row1_tile(2)
@@ -138,5 +98,5 @@ def test_two():
     print len(sol)    
 
 if __name__ == '__main__':
-    test_one()
+    test_two()
     # poc_fifteen_gui.FifteenGUI(poc_fifteen.Puzzle(2, 3, T_T))
