@@ -7,7 +7,7 @@ Online version: http://www.codeskulptor.org/#user40_z4gNwFVH3S_27.py
 
 import poc_fifteen_gui
 
-class Puzzle:
+class Puzzle(object):
     """
     Class representation for the Fifteen puzzle
     """
@@ -262,7 +262,7 @@ class Puzzle:
         for idx in xrange(target_col-correct_tile[1]-1):
             move_string += 'l'
         if correct_tile[0] == 0:
-            if move_string:
+            if len(move_string) > 2:
                 move_string += 'urdl'
             else:
                 move_string += 'uld'
@@ -286,7 +286,7 @@ class Puzzle:
         correct_tile = self.current_position(1, target_col)
         move_string = self.basic_move_tile(correct_tile[0], correct_tile[1], 1, target_col) +'ur'
         self.update_puzzle(move_string)
-        assert self.row0_invariant(target_col), 'Return wrong string'
+        assert self.row0_invariant(target_col), 'Return wrong string '+move_string
         return move_string
 
     def solve_2x2(self):
@@ -325,7 +325,7 @@ class Puzzle:
             solve_string += cody.solve_row1_tile(col)
             solve_string += cody.solve_row0_tile(col)
         solve_string += cody.solve_2x2()
-        solve_string = self.prune(self.prune(self.prune(solve_string)))
+        solve_string = self.prune(self.prune(self.prune(self.prune(self.prune(solve_string)))))
         self.update_puzzle(solve_string)
 
         return initial_string + solve_string
