@@ -74,7 +74,8 @@ class Puzzle(object):
         new_puzzle = Puzzle(self._height, self._width, self._grid)
         return new_puzzle
 
-    def prune(self, string):
+    @staticmethod
+    def prune(string):
         return string.replace('ud','').replace('du', '').replace('lr', '').replace('rl', '')
 
     def current_position(self, solved_row, solved_col):
