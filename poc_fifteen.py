@@ -328,6 +328,7 @@ class Puzzle(object):
         solve_string += cody.solve_2x2()
         solve_string = self.prune(self.prune(self.prune(self.prune(self.prune(solve_string)))))
         self.update_puzzle(solve_string)
+        del cody
 
         return initial_string + solve_string
 

@@ -48,7 +48,7 @@ class FifteenGUI:
         self._root.bind(sequence='<KeyPress-Right>', func=self.keydown)
         self._root.after(300, self.tick)
 
-        self.draw(self._frame)
+        self.draw()
         self._root.mainloop()
 
     def tick(self):
@@ -64,7 +64,7 @@ class FifteenGUI:
             self._puzzle.update_puzzle(direction)
         except:
             print "invalid move:", direction
-        self.draw(self._frame)
+        self.draw()
         self._root.after(300, self.tick)
 
     def solve(self):
@@ -73,6 +73,8 @@ class FifteenGUI:
         """
         new_puzzle = self._puzzle.clone()
         self._solution = new_puzzle.solve_puzzle()
+        del new_puzzle
+        pass
 
     def print_moves(self):
         """
@@ -115,13 +117,14 @@ class FifteenGUI:
                 self._current_moves += "r"
             except:
                 print "invalid move: right"
-        self.draw(self._frame)
+        self.draw()
 
-    def draw(self, canvas):
+    def draw(self):
         """
         Draw the puzzle
         """
-        canvas.delete()
+        self._frame.delete('all')
+
         for row in xrange(self._puzzle_height):
             for col in xrange(self._puzzle_width):
                 tile_num = self._puzzle.get_number(row, col)
@@ -133,8 +136,8 @@ class FifteenGUI:
                         [(col + 1) * TILE_SIZE, row * TILE_SIZE],
                         [(col + 1) * TILE_SIZE, (row + 1) * TILE_SIZE],
                         [col * TILE_SIZE, (row + 1) * TILE_SIZE])
-                canvas.create_polygon(*tile, outline="white", fill=background)
-                canvas.create_text((col + .2) * TILE_SIZE,
+                self._frame.create_polygon(*tile, outline="white", fill=background)
+                self._frame.create_text((col + .2) * TILE_SIZE,
                                 (row + 0.8) * TILE_SIZE,
                                 text=str(tile_num), fill="white")
 
